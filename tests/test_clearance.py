@@ -1,12 +1,24 @@
 """A mismatch is refused."""
+from dataclasses import dataclass
+
 from platforms.unitcommit.src.application.apply_derate import apply_derates, from_flexible
 from platforms.unitcommit.src.application.build_ising import Cluster, OpfSolution, ZoneSnapshot
 from platforms.unitcommit.src.application.clearance import build_and_clear
-from platforms.loadclear.src.application.cluster import FlexibleCluster
+
+
+@dataclass(frozen=True)
+class _Group:
+    cluster_id: str
+    pmin_mw: float
+    pmax_mw: float
+    c_nl: float
+    c_su: float
+    mut_steps: int
+    initial_on: int
 
 
 def test_derate_shrinks_pmax_before_clearance():
-    flex = FlexibleCluster("a", pmin_mw=10, pmax_mw=50, c_nl=10, c_su=40, mut_steps=2, initial_on=1)
+    flex = _Group("a", 10, 50, 10, 40, 2, 1)
     cluster = from_flexible(flex)
 
     class _D:

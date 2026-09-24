@@ -10,3 +10,10 @@ It does not call a quantum computer, and it does not sign the record.
 
 Copyright 2026 DIGITAL CURRENSY INC / Module Kinetic Ltd. Apache-2.0. See [LICENSE](LICENSE).
 Parent: [module-kinetic-ltd](https://github.com/DigitalCurrensy/module-kinetic-ltd)
+
+## Tests
+
+```bash
+python -m pip install pytest
+PYTHONPATH=. python -m pytest
+```

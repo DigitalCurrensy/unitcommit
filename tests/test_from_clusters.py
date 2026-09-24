@@ -1,6 +1,18 @@
 """The cabinet factor shrinks the group before the power check."""
+from dataclasses import dataclass
+
 from platforms.unitcommit.src.application.from_clusters import clusters_from_flex
-from platforms.loadclear.src.application.cluster import FlexibleCluster
+
+
+@dataclass(frozen=True)
+class _Group:
+    cluster_id: str
+    pmin_mw: float
+    pmax_mw: float
+    c_nl: float
+    c_su: float
+    mut_steps: int = 1
+    initial_on: int = 0
 
 
 class _D:
@@ -10,9 +22,7 @@ class _D:
 
 
 def test_flex_becomes_shrunk_cluster():
-    flex = FlexibleCluster(
-        "site-s1", pmin_mw=0.0, pmax_mw=0.04, c_nl=10.0, c_su=5.0, mut_steps=1, initial_on=1
-    )
+    flex = _Group("site-s1", pmin_mw=0.0, pmax_mw=0.04, c_nl=10.0, c_su=5.0, mut_steps=1, initial_on=1)
     clusters = clusters_from_flex([flex], [_D("site-s1", 0.70)])
     assert len(clusters) == 1
     assert abs(clusters[0].pmax_mw - 0.028) < 1e-9
@@ -20,9 +30,7 @@ def test_flex_becomes_shrunk_cluster():
 
 
 def test_zero_factor_forces_initial_off():
-    flex = FlexibleCluster(
-        "site-s1", pmin_mw=0.0, pmax_mw=0.04, c_nl=10.0, c_su=5.0, mut_steps=1, initial_on=1
-    )
+    flex = _Group("site-s1", pmin_mw=0.0, pmax_mw=0.04, c_nl=10.0, c_su=5.0, mut_steps=1, initial_on=1)
     clusters = clusters_from_flex([flex], [_D("site-s1", 0.0)])
     assert clusters[0].pmax_mw == 0.0
     assert clusters[0].initial_on == 0
